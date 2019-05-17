@@ -1,5 +1,10 @@
 package com.amalgamsoft.contatos.utilities;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Environment;
+import android.util.Base64;
+
 import com.amalgamsoft.contatos.AppContacto;
 import com.amalgamsoft.contatos.ListadoContactos;
 import com.amalgamsoft.contatos.MainActivity;
@@ -13,6 +18,8 @@ import com.android.volley.toolbox.StringRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +47,13 @@ public class APIUtility {
                 try {
                     json.put("nombre", contacto.getNombre());
                     json.put("telefono", contacto.getTelefono());
-                    json.put("fotografia", "ssssss");
+                    Bitmap bmp = BitmapFactory.decodeFile(Environment.getExternalStorageDirectory() + File.separator + "dataC" + File.separator + "foto.jpg");
+                    bmp = Bitmap.createScaledBitmap(bmp, 300, 150, false);
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    bmp.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                    byte[] byteArray = stream.toByteArray();
+                    String encodedfile = Base64.encodeToString(byteArray, Base64.DEFAULT);
+                    json.put("fotografia", encodedfile);
                     hilera = json.toString().getBytes("UTF-8");
                 } catch (JSONException e) {
                     e.printStackTrace();
